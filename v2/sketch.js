@@ -137,7 +137,7 @@ function moveBall() {
     if(collision[0]) ball.speed_x *= -1;
     if(collision[1]) ball.speed_y *= -1;
     if(collision[0] || collision[1]) {
-      random(p2.sounds).play();
+      random(p.sounds).play();
       while(collision[0] || collision[1]) {
         ball.x = ball.x + ball.speed_x;
         ball.y = ball.y + ball.speed_y;
