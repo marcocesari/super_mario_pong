@@ -1,4 +1,4 @@
-let p1, p2, p1_image, p2_image;
+let p1, p2, p1_image, p2_image, p1_sounds, p2_sounds;
 let bkg;
 let ball, ball_image, ball_sound;
 let game_status, game_over_sound;
@@ -11,6 +11,15 @@ function preload() {
   game_over_sound = loadSound('assets/smb_gameover.wav');
   p1_image = loadImage('assets/mario_right.png');
   p2_image = loadImage('assets/luigi_left.png');
+  
+  mario = loadSound('assets/mario.m4a');
+  luigi = loadSound('assets/luigi.m4a');
+  mammamia = loadSound('assets/mammamia.m4a');
+  wow = loadSound('assets/wow.m4a');
+  ok = loadSound('assets/ok.m4a');
+  letsgo = loadSound('assets/letsgo.m4a');
+  p1_sounds = [mario, mammamia, wow, ok, letsgo];
+  p2_sounds = [luigi, mammamia, wow, ok, letsgo];
 }
 
 function setup() {
@@ -22,12 +31,14 @@ function setup() {
 
   p1 = {
     image: p1_image,
+    sounds: p1_sounds,
     x: 25,
     y: height/2 - p1_image.height/2,
     score: 0
   }
   p2 = {
     image: p2_image,
+    sounds: p2_sounds,
     x: width - 25 - p2_image.width,
     y: height/2 - p2_image.height/2,
     score: 0
@@ -41,6 +52,8 @@ function setup() {
     accel_y: 0.001
   }
   game_status = 'play';
+
+  
 }
 
 function draw() {
@@ -119,13 +132,19 @@ function moveBall() {
     ball.speed_y = -1 * ball.speed_y;
   }
 
-  let collision_p1_ball = detect_collision_with_ball(p1);
-  if(collision_p1_ball[0]) ball.speed_x = -1 * ball.speed_x;
-  if(collision_p1_ball[1]) ball.speed_y = -1 * ball.speed_y;
-
-  let collision_p2_ball = detect_collision_with_ball(p2);
-  if(collision_p2_ball[0]) ball.speed_x = -1 * ball.speed_x;
-  if(collision_p2_ball[1]) ball.speed_y = -1 * ball.speed_y;
+  for(let p of [p1, p2]) {
+    let collision = detect_collision_with_ball(p);
+    if(collision[0]) ball.speed_x *= -1;
+    if(collision[1]) ball.speed_y *= -1;
+    if(collision[0] || collision[1]) {
+      random(p2.sounds).play();
+      while(collision[0] || collision[1]) {
+        ball.x = ball.x + ball.speed_x;
+        ball.y = ball.y + ball.speed_y;
+        collision = detect_collision_with_ball(p);
+      }
+    }
+  }
 
   ball.x = ball.x + ball.speed_x;
   ball.y = ball.y + ball.speed_y;

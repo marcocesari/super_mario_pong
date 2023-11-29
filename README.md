@@ -1,6 +1,6 @@
 # super_mario_pong
 
-This is my first game project using p5js!
+This is my second game project using p5js!
 
 ## V1:
 
